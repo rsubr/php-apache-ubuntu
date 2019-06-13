@@ -7,11 +7,12 @@ Docker image containing Ubuntu 18.04 LTS core with Apache 2.4 and PHP 7.2. This 
 # Architecture Overview
 
 * Run multiple EC2 instances across different availability zones to create a redundant docker swarm.
+* Cloudwatch alarms must be used to restart failed EC2 instances.
 * All EC2 instances must join the docker swarm and mount a common EFS volume on `/srv`.
 * Docker container will mount `/srv/example.com/www` as the Apache `DocumentRoot` to serve php applications.
 * RDS must be used for hosting databases.
 * When this image is run as a docker service in the swarm, a unique port on the host (eg tcp:8001) is mapped to 80 within the container.
-* AWS Target Group `example-com`)` is created with all the EC2 instances of the swarm and specific TCP port (eg tcp:8001) and attached to ALB.
+* AWS Target Group `example-com` is created with all the EC2 instances of the swarm and specific TCP port (eg tcp:8001) and attached to ALB.
 * Docker mesh routing is not cookie/sticky session aware and disabled. HTTP load balancing is fully managed on AWS ALB.
 * AWS ALB rules are used to route example.com and www.example.com requests to `example-com` Target Group.
 * AWS ALB is also used for HTTPS termination, docker containers provide only vanilla HTTP.
@@ -75,3 +76,8 @@ Run 2 replicas of the container as a docker service. This command must be run fr
 ```
 docker service create --replicas 2 --name example-com --publish published=8000,target=80,mode=host --mount type=bind,source=/srv/example.com/www,destination=/var/www/html rsubr/php-apache-ubuntu:bionic
 ```
+
+# TODO
+* Instead of AWS ECS, this setup uses portainer.io or other docker swarm manager.
+* Autoscaling is not possible with current architecture, needs ECS.
+* Improve documentation.
