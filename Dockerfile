@@ -42,6 +42,12 @@ RUN apt-get update && \
 COPY src/000-default.conf /etc/apache2/sites-available
 COPY src/mpm_prefork.conf /etc/apache2/mods-available
 
+# Use ksm_preload via LD_PRELOAD so ksmd can dedupe RAM
+# Binary built on Ubuntu 18.04 x64 from https://github.com/unbrice/ksm_preload
+# Enable KSM by "echo 1 > /sys/kernel/mm/ksm/run"
+COPY src/libksm_preload.so /usr/local/lib
+COPY src/ld.so.preload /etc
+
 # Expose details about this docker image
 COPY src/index.php /var/www/html
 RUN rm -f /var/www/html/index.html && \
