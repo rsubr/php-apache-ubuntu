@@ -41,6 +41,7 @@ RUN apt-get update && \
 # Override default apache config
 COPY src/000-default.conf /etc/apache2/sites-available
 COPY src/mpm_prefork.conf /etc/apache2/mods-available
+COPY src/status.conf      /etc/apache2/mods-available
 
 # Expose details about this docker image
 COPY src/index.php /var/www/html
