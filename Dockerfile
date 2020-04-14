@@ -1,5 +1,5 @@
-FROM ubuntu:bionic
-LABEL Author="Raja Subramanian" Description="A comprehensive docker image to run Apache-2.4 PHP-7.2 applications like Wordpress, Laravel, etc"
+FROM ubuntu:focal
+LABEL Author="Raja Subramanian" Description="A comprehensive docker image to run Apache-2.4 PHP-7.4 applications like Wordpress, Laravel, etc"
 
 
 # Stop dpkg-reconfigure tzdata from prompting for input
@@ -32,11 +32,13 @@ RUN apt-get update && \
 # Setup apache
     a2enmod rewrite headers expires ext_filter && \
 # Increase PHP file upload limit
-    echo post_max_size       = 64M >> /etc/php/7.2/apache2/php.ini && \
-    echo upload_max_filesize = 64M >> /etc/php/7.2/apache2/php.ini && \
+    echo post_max_size       = 64M >> /etc/php/7.4/apache2/php.ini && \
+    echo upload_max_filesize = 64M >> /etc/php/7.4/apache2/php.ini && \
 # AWS EFS is slow, so check for php file changes only every 5 mins
-    echo opcache.revalidate_freq = 300 >> /etc/php/7.2/apache2/php.ini && \
-    echo opcache.fast_shutdown   = 1   >> /etc/php/7.2/apache2/php.ini
+    echo opcache.revalidate_freq = 300 >> /etc/php/7.4/apache2/php.ini && \
+    echo opcache.fast_shutdown   = 1   >> /etc/php/7.4/apache2/php.ini && \
+# Use PHP7.4 Opcache preload
+    echo opcache.preload = /var/www/html/opcache-preload.php >> /etc/php/7.4/apache2/php.ini
 
 # Override default apache config
 COPY src/000-default.conf /etc/apache2/sites-available
