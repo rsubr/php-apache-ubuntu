@@ -37,8 +37,10 @@ RUN apt-get update && \
 # AWS EFS is slow, so check for php file changes only every 5 mins
     echo opcache.revalidate_freq = 300 >> /etc/php/7.4/apache2/php.ini && \
     echo opcache.fast_shutdown   = 1   >> /etc/php/7.4/apache2/php.ini && \
-# Use PHP7.4 Opcache preload
-    echo opcache.preload = /var/www/html/opcache-preload.php >> /etc/php/7.4/apache2/php.ini
+# Use PHP7.4 Opcache preload, and an empty preload file for starters
+# Note: without this file, PHP will fail and the container will not start
+    echo opcache.preload = /var/www/html/.opcache-preload.php >> /etc/php/7.4/apache2/php.ini && \
+    touch /var/www/html/.opcache-preload.php
 
 # Override default apache config
 COPY src/000-default.conf /etc/apache2/sites-available
