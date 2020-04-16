@@ -36,7 +36,7 @@ RUN apt-get update && \
     echo upload_max_filesize = 64M >> /etc/php/7.4/apache2/php.ini && \
 # AWS EFS is slow, so check for php file changes only every 5 mins
     echo opcache.revalidate_freq = 300 >> /etc/php/7.4/apache2/php.ini && \
-    echo opcache.fast_shutdown   = 1   >> /etc/php/7.4/apache2/php.ini &&
+    echo opcache.fast_shutdown   = 1   >> /etc/php/7.4/apache2/php.ini
 
 # Override default apache config
 COPY src/000-default.conf /etc/apache2/sites-available
