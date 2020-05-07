@@ -36,7 +36,7 @@ RUN apt-get update && \
 COPY src/000-default.conf /etc/apache2/sites-available
 COPY src/mpm_prefork.conf /etc/apache2/mods-available
 COPY src/status.conf      /etc/apache2/mods-available
-COPY src/99-local.ini     /etc/php/7.2/apache2/conf.d
+COPY src/99-local.ini     /etc/php/7.4/apache2/conf.d
 
 # Expose details about this docker image
 COPY src/index.php /var/www/html
