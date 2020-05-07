@@ -30,18 +30,13 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
 # Setup apache
-    a2enmod rewrite headers expires ext_filter && \
-# Increase PHP file upload limit
-    echo post_max_size       = 64M >> /etc/php/7.4/apache2/php.ini && \
-    echo upload_max_filesize = 64M >> /etc/php/7.4/apache2/php.ini && \
-# AWS EFS is slow, so check for php file changes only every 5 mins
-    echo opcache.revalidate_freq = 300 >> /etc/php/7.4/apache2/php.ini && \
-    echo opcache.fast_shutdown   = 1   >> /etc/php/7.4/apache2/php.ini
+    a2enmod rewrite headers expires ext_filter
 
-# Override default apache config
+# Override default apache and php config
 COPY src/000-default.conf /etc/apache2/sites-available
 COPY src/mpm_prefork.conf /etc/apache2/mods-available
 COPY src/status.conf      /etc/apache2/mods-available
+COPY src/99-local.ini     /etc/php/7.2/apache2/conf.d
 
 # Expose details about this docker image
 COPY src/index.php /var/www/html
