@@ -1,5 +1,5 @@
-FROM ubuntu:bionic
-LABEL Author="Raja Subramanian" Description="A comprehensive docker image to run Apache-2.4 PHP-7.2 applications like Wordpress, Laravel, etc"
+FROM ubuntu:focal
+LABEL Author="Raja Subramanian" Description="A comprehensive docker image to run Apache-2.4 PHP-7.4 applications like Wordpress, Laravel, etc"
 
 
 # Stop dpkg-reconfigure tzdata from prompting for input
@@ -36,7 +36,7 @@ RUN apt-get update && \
 COPY src/000-default.conf /etc/apache2/sites-available
 COPY src/mpm_prefork.conf /etc/apache2/mods-available
 COPY src/status.conf      /etc/apache2/mods-available
-COPY src/99-local.ini     /etc/php/7.2/apache2/conf.d
+COPY src/99-local.ini     /etc/php/7.4/apache2/conf.d
 
 # Expose details about this docker image
 COPY src/index.php /var/www/html
