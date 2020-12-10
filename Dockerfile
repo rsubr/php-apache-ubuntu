@@ -18,6 +18,9 @@ RUN apt-get update && \
         php-mime-type \
         php-tidy \
         php-intl \
+        php-xmlrpc \
+        php-soap \
+        php-zip \
 # Ensure apache can bind to 80 as non-root
         libcap2-bin && \
     setcap 'cap_net_bind_service=+ep' /usr/sbin/apache2 && \
