@@ -31,7 +31,7 @@ RUN apt-get update && \
     a2disconf other-vhosts-access-log && \
     chown -Rh www-data. /var/run/apache2 && \
 # Install ImageMagick CLI tools
-    apt install --no-install-recommends imagemagick && \
+    apt-get -y install --no-install-recommends imagemagick && \
 # Clean up apt setup files
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
