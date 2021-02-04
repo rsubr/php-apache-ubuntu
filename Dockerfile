@@ -21,6 +21,7 @@ RUN apt-get update && \
         php-intl \
         php-xmlrpc \
         php-soap \
+        php-uploadprogress \
         php-zip \
 # Ensure apache can bind to 80 as non-root
         libcap2-bin && \
