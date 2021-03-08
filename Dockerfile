@@ -16,6 +16,7 @@ RUN apt-get update && \
         php-gd \
         php-mysql \
         php-json \
+        php-ldap \
         php-mime-type \
         php-tidy \
         php-intl \
