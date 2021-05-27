@@ -41,7 +41,7 @@ Docker image containing Ubuntu 20.04 LTS core with Apache 2.4 and PHP 7.4. This 
 # Building
 To build:
 ```
-docker build --no-cache -t rsubr/php-apache-ubuntu:bionic .
+docker build --no-cache -t rsubr/php-apache-ubuntu:focal .
 ```
 
 # Running
@@ -50,7 +50,7 @@ docker build --no-cache -t rsubr/php-apache-ubuntu:bionic .
 Run with internal document root to reveal Apache/PHP config. See http://localhost/index.php and http://localhost/.config/
 
 ```
-docker run --name=test -p 80:80 rsubr/php-apache-ubuntu:bionic
+docker run --name=test -p 80:80 rsubr/php-apache-ubuntu:focal
 ```
 
 ## Example 2: Testing WordPress
@@ -58,7 +58,7 @@ docker run --name=test -p 80:80 rsubr/php-apache-ubuntu:bionic
 Run a WordPress site from /srv/example.com/www
 
 ```
-docker run --name=example-com -v /srv/example.com/www:/var/www/html -p 80:80 rsubr/php-apache-ubuntu:bionic
+docker run --name=example-com -v /srv/example.com/www:/var/www/html -p 80:80 rsubr/php-apache-ubuntu:focal
 ```
 
 ## Example 3: Using custom apache2 and php config
@@ -66,7 +66,7 @@ docker run --name=example-com -v /srv/example.com/www:/var/www/html -p 80:80 rsu
 Run a WordPress site from /srv/example.com/www, but this time use custom apache and php config from /srv/example.com/etc/{apache,php}
 
 ```
-docker run --name=example-com -v /srv/example.com/www:/var/www/html -v /srv/example.com/etc/apache2:/etc/apache2:ro -v /srv/example.com/etc/php:/etc/php:ro -p 80:80 rsubr/php-apache-ubuntu:bionic
+docker run --name=example-com -v /srv/example.com/www:/var/www/html -v /srv/example.com/etc/apache2:/etc/apache2:ro -v /srv/example.com/etc/php:/etc/php:ro -p 80:80 rsubr/php-apache-ubuntu:focal
 ```
 
 ## Example 4: Running as a docker service in a docker swarm
@@ -74,7 +74,7 @@ docker run --name=example-com -v /srv/example.com/www:/var/www/html -v /srv/exam
 Run 2 replicas of the container as a docker service. This command must be run from a docker swarm manager node. AWS ALB and Target Group must be created to route traffic for example.com to this container:
 
 ```
-docker service create --replicas 2 --name example-com --publish published=8000,target=80,mode=host --mount type=bind,source=/srv/example.com/www,destination=/var/www/html rsubr/php-apache-ubuntu:bionic
+docker service create --replicas 2 --name example-com --publish published=8000,target=80,mode=host --mount type=bind,source=/srv/example.com/www,destination=/var/www/html rsubr/php-apache-ubuntu:focal
 ```
 
 # TODO

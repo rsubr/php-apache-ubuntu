@@ -18,6 +18,7 @@ RUN apt-get update && \
         php-json \
         php-ldap \
         php-mime-type \
+        php-pgsql \
         php-tidy \
         php-intl \
         php-xmlrpc \
