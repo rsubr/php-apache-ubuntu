@@ -3,6 +3,7 @@ name: multi-arch docker build using qemu
 on:
   push:
     branches: master
+  workflow_dispatch:
 
 jobs:
   build:
