@@ -2,7 +2,7 @@
 
 DIY AWS Lambda for PHP applications!
 
-Docker image containing Ubuntu 20.04 LTS core with Apache 2.4 and PHP 7.4. This image is designed to be used in AWS environments for high density PHP application hosting. WordPress 5.x and Drupal 7.x are tested to work.
+Docker image containing Ubuntu 22.04 LTS core with Apache 2.4 and PHP 8.1. This image is designed to be used in AWS environments for high density PHP application hosting. WordPress 5.x and Drupal 7.x are tested to work.
 
 # Architecture Overview
 
@@ -20,13 +20,14 @@ Docker image containing Ubuntu 20.04 LTS core with Apache 2.4 and PHP 7.4. This 
 * Apache logs are sent to stdout/stderr and can be routed to AWS Cloudwatch using the docker `awslogs` log driver.
 
 # Filesystem Layout
- * `/srv` -- base dir to be published via AWS EFS to all nodes, subdirectories `/srv/example.com`, `/srv/example.net`, etc to be created for each website/domain.
- * `/srv/example.com/www` -- root folder for php applications (WordPress root, Drupal root, etc), mounted within docker containers as Apache `DocumentRoot`
- * `/srv/example.com/etc/apache` and `/srv/example.com/etc/php` -- optional apache/php config
- * `/srv/example.com/mysqlbackup` -- used for storing MySQL dumps
 
+* `/srv` -- base dir to be published via AWS EFS to all nodes, subdirectories `/srv/example.com`, `/srv/example.net`, etc to be created for each website/domain.
+* `/srv/example.com/www` -- root folder for php applications (WordPress root, Drupal root, etc), mounted within docker containers as Apache `DocumentRoot`
+* `/srv/example.com/etc/apache` and `/srv/example.com/etc/php` -- optional apache/php config
+* `/srv/example.com/mysqlbackup` -- used for storing MySQL dumps
 
 # Small But Significant Things
+
 * Apache MPM prefork is configured to reduce RAM usage, a WordPress 5.x container will idle around 50-75MB of RAM.
 * WordPress W3TC plugin cache folder is in `$WP_ROOT/wp-content/cache`. EFS is slow, so it's recommended to move the cache folder inside the docker container. Delete the cache folder and run `ln -s /srv/example.com/www/wp-content/cache /tmp`. Cache folder will be hosted within docker instance and run faster.
 * PHP POST max and max file upload size is increased to 64MB to handle large file uploads.
@@ -37,47 +38,50 @@ Docker image containing Ubuntu 20.04 LTS core with Apache 2.4 and PHP 7.4. This 
 * To use custom Apache config, extract the base apache config in `/svr/example.com/etc` and then bind mount it inside the container. Eg. `docker run -v /srv/example.com/etc/php:/etc/php:ro -v /srv/example.com/etc/apache:/etc/apache:ro ...`
 * WordPress updates can be handled outside the docker environment via WP-CLI. From an independent EC2 instance, 1) apt install all Apache/PHP WordPress dependencies, 2) mount EFS /srv volume, 3) run `cd /srv/example.com/www && wp-cli plugin update --all`.
 
-
 # Building
+
 To build:
-```
-docker build --no-cache -t rsubr/php-apache-ubuntu:focal .
+
+```bash
+docker build --no-cache -t rsubr/php-apache-ubuntu:jammy .
 ```
 
 # Running
+
 ## Example 1: Basic usage
 
 Run with internal document root to reveal Apache/PHP config. See http://localhost/index.php and http://localhost/.config/
 
-```
-docker run --name=test -p 80:80 rsubr/php-apache-ubuntu:focal
+```bash
+docker run --name=test -p 80:80 rsubr/php-apache-ubuntu:jammy
 ```
 
 ## Example 2: Testing WordPress
 
 Run a WordPress site from /srv/example.com/www
 
-```
-docker run --name=example-com -v /srv/example.com/www:/var/www/html -p 80:80 rsubr/php-apache-ubuntu:focal
+```bash
+docker run --name=example-com -v /srv/example.com/www:/var/www/html -p 80:80 rsubr/php-apache-ubuntu:jammy
 ```
 
 ## Example 3: Using custom apache2 and php config
 
 Run a WordPress site from /srv/example.com/www, but this time use custom apache and php config from /srv/example.com/etc/{apache,php}
 
-```
-docker run --name=example-com -v /srv/example.com/www:/var/www/html -v /srv/example.com/etc/apache2:/etc/apache2:ro -v /srv/example.com/etc/php:/etc/php:ro -p 80:80 rsubr/php-apache-ubuntu:focal
+```bash
+docker run --name=example-com -v /srv/example.com/www:/var/www/html -v /srv/example.com/etc/apache2:/etc/apache2:ro -v /srv/example.com/etc/php:/etc/php:ro -p 80:80 rsubr/php-apache-ubuntu:jammy
 ```
 
 ## Example 4: Running as a docker service in a docker swarm
 
 Run 2 replicas of the container as a docker service. This command must be run from a docker swarm manager node. AWS ALB and Target Group must be created to route traffic for example.com to this container:
 
-```
-docker service create --replicas 2 --name example-com --publish published=8000,target=80,mode=host --mount type=bind,source=/srv/example.com/www,destination=/var/www/html rsubr/php-apache-ubuntu:focal
+```bash
+docker service create --replicas 2 --name example-com --publish published=8000,target=80,mode=host --mount type=bind,source=/srv/example.com/www,destination=/var/www/html rsubr/php-apache-ubuntu:jammy
 ```
 
 # TODO
+
 * Instead of AWS ECS, this setup uses portainer.io or other docker swarm manager.
 * Autoscaling is not possible with current architecture, needs ECS.
 * Improve documentation.

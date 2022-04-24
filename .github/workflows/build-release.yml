@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     
     steps:
       - name: checkout code
@@ -28,7 +28,6 @@ jobs:
       - name: build multi-arch image and push to docker hub
         run: |
           docker buildx build --push \
-            --tag rsubr/php-apache-ubuntu:latest \
-            --tag rsubr/php-apache-ubuntu:focal  \
-            --tag rsubr/php-apache-ubuntu:20.04  \
+            --tag rsubr/php-apache-ubuntu:jammy  \
+            --tag rsubr/php-apache-ubuntu:22.04  \
             --platform linux/amd64,linux/arm64 .
