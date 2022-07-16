@@ -18,6 +18,7 @@ RUN apt-get update && \
         php-mysql \
         php-json \
         php-ldap \
+        php-memcached \
         php-mime-type \
         php-pgsql \
         php-tidy \
