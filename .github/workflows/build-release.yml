@@ -2,7 +2,7 @@ name: multi-arch docker build using qemu
 
 on:
   push:
-    branches: master
+    branches: focal
   workflow_dispatch:
 
 jobs:
