@@ -11,7 +11,7 @@ RUN apt-get update && \
         apache2 \
         libapache2-mod-php \
         libapache2-mod-auth-openidc \
-        php-bcmath
+        php-bcmath \
         php-cli \
         php-curl \
         php-mbstring \
