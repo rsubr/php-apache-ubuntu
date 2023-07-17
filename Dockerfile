@@ -14,19 +14,20 @@ RUN apt-get update && \
         php-bcmath \
         php-cli \
         php-curl \
-        php-mbstring \
         php-gd \
-        php-mysql \
+        php-intl \
         php-json \
         php-ldap \
+        php-mbstring \
         php-memcached \
         php-mime-type \
+        php-mysql \
         php-pgsql \
-        php-tidy \
-        php-intl \
-        php-xmlrpc \
         php-soap \
+        php-tidy \
         php-uploadprogress \
+        php-xmlrpc \
+        php-yaml \
         php-zip \
 # Ensure apache can bind to 80 as non-root
         libcap2-bin && \
