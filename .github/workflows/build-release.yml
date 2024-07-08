@@ -2,7 +2,7 @@ name: multi-arch docker build using qemu
 
 on:
   push:
-    branches: jammy
+    branches: noble
   workflow_dispatch:
 
 jobs:
@@ -28,6 +28,6 @@ jobs:
       - name: build multi-arch image and push to docker hub
         run: |
           docker buildx build --push \
-            --tag rsubr/php-apache-ubuntu:jammy  \
-            --tag rsubr/php-apache-ubuntu:22.04  \
+            --tag rsubr/php-apache-ubuntu:noble  \
+            --tag rsubr/php-apache-ubuntu:24.04  \
             --platform linux/amd64,linux/arm64 .

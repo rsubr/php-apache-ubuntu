@@ -1,5 +1,5 @@
-FROM ubuntu:jammy
-LABEL Author="Raja Subramanian" Description="A comprehensive docker image to run Apache-2.4 PHP-8.1 applications like Wordpress, Laravel, etc"
+FROM ubuntu:noble
+LABEL Author="Raja Subramanian" Description="A comprehensive docker image to run Apache-2.4 PHP-8.3 applications like Wordpress, Laravel, etc"
 
 
 # Stop dpkg-reconfigure tzdata from prompting for input
@@ -20,7 +20,6 @@ RUN apt-get update && \
         php-ldap \
         php-mbstring \
         php-memcached \
-        php-mime-type \
         php-mysql \
         php-pgsql \
         php-soap \
@@ -36,7 +35,7 @@ RUN apt-get update && \
     apt-get -y autoremove && \
 # As apache is never run as root, change dir ownership
     a2disconf other-vhosts-access-log && \
-    chown -Rh www-data. /var/run/apache2 && \
+    chown -Rh www-data:www-data /var/run/apache2 && \
 # Install ImageMagick CLI tools
     apt-get -y install --no-install-recommends imagemagick && \
 # Clean up apt setup files
