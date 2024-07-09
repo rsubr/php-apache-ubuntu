@@ -25,6 +25,7 @@ RUN apt-get update && \
         php-soap \
         php-tidy \
         php-uploadprogress \
+        php-xml \
         php-xmlrpc \
         php-yaml \
         php-zip \
