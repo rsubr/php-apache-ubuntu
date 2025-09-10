@@ -2,7 +2,7 @@ name: multi-arch docker build using native runners
 
 on:
   push:
-    tags: "noble"
+    branches: "noble"
   workflow_dispatch:
 
 jobs:
