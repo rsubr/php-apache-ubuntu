@@ -1,33 +1,53 @@
-name: multi-arch docker build using qemu
+name: multi-arch docker build using native runners
 
 on:
   push:
-    branches: noble
+    tags: "noble"
   workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: ubuntu-20.04
+  build-amd64:
+    runs-on: ubuntu-24.04
     
     steps:
       - name: checkout code
-        uses: actions/checkout@v2
-        
-      - name: set up qemu for linux/arm64
-        uses: docker/setup-qemu-action@v1
+        uses: actions/checkout@v4
 
       - name: install buildx
         id: buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v3
         with:
           version: latest
 
       - name: login to docker hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      - name: build multi-arch image and push to docker hub
+      - name: build amd64 image and push to docker hub
         run: |
           docker buildx build --push \
             --tag rsubr/php-apache-ubuntu:noble  \
             --tag rsubr/php-apache-ubuntu:24.04  \
-            --platform linux/amd64,linux/arm64 .
+            --platform linux/amd64 .
+
+  build-arm64:
+    runs-on: ubuntu-24.04-arm
+    
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+
+      - name: install buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          version: latest
+
+      - name: login to docker hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: build arm64 image and push to docker hub
+        run: |
+          docker buildx build --push \
+            --tag rsubr/php-apache-ubuntu:noble  \
+            --tag rsubr/php-apache-ubuntu:24.04  \
+            --platform linux/arm64 .
