@@ -17,6 +17,7 @@ RUN apt-get update && \
         php-cli \
         php-curl \
         php-gd \
+        php-imagick \
         php-intl \
         php-json \
         php-ldap \
