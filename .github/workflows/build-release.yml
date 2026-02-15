@@ -1,33 +1,75 @@
-name: multi-arch docker build using qemu
+name: multi-arch docker build (native + SLSA)
 
 on:
   push:
     branches: noble
   workflow_dispatch:
 
+permissions:
+  contents: read
+  id-token: write   # required for provenance attestations
+
 jobs:
   build:
-    runs-on: ubuntu-24.04
-    
+    name: Build (${{ matrix.arch }})
+    strategy:
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-24.04
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+
+    runs-on: ${{ matrix.runner }}
+
     steps:
-      - name: checkout code
+      - name: Checkout source
         uses: actions/checkout@v4
-        
-      - name: set up qemu for linux/arm64
-        uses: docker/setup-qemu-action@v3
 
-      - name: install buildx
-        id: buildx
+      - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
         with:
-          version: latest
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: login to docker hub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
-      - name: build multi-arch image and push to docker hub
+      - name: Build & push architecture image (with SLSA attestations)
         run: |
-          docker buildx build --push \
-            --tag rsubr/php-apache-ubuntu:noble  \
-            --tag rsubr/php-apache-ubuntu:24.04  \
-            --platform linux/amd64,linux/arm64 .
+          docker buildx build \
+            --push \
+            --platform linux/${{ matrix.arch }} \
+            --tag rsubr/php-apache-ubuntu:noble-${{ matrix.arch }} \
+            --tag rsubr/php-apache-ubuntu:24.04-${{ matrix.arch }}  \
+            --attest type=provenance,mode=max \
+            --attest type=sbom \
+            .
+
+  manifest:
+    name: Create multi-arch manifest
+    needs: build
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Setup Docker CLI
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # Give Docker Hub time to register pushed images
+      - name: Wait for registry sync
+        run: sleep 15
+
+      - name: Create and push multi-arch tag
+        run: |
+          docker buildx imagetools create \
+            --tag rsubr/php-apache-ubuntu:noble \
+            --tag rsubr/php-apache-ubuntu:24.04 \
+            rsubr/php-apache-ubuntu:noble \
+            rsubr/php-apache-ubuntu:24.04
+
