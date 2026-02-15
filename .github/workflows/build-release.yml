@@ -68,10 +68,12 @@ jobs:
       - name: Create and push multi-arch tag
         run: |
           docker buildx imagetools create \
-            --tag rsubr/php-apache-ubuntu:noble-amd64 \
-            --tag rsubr/php-apache-ubuntu:24.04-amd64 \
-            --tag rsubr/php-apache-ubuntu:noble-arm64 \
-            --tag rsubr/php-apache-ubuntu:24.04-arm64 \
-            rsubr/php-apache-ubuntu:noble \
-            rsubr/php-apache-ubuntu:24.04
+            --tag rsubr/php-apache-ubuntu:noble \
+            rsubr/php-apache-ubuntu:noble-amd64 \
+            rsubr/php-apache-ubuntu:noble-arm64
+
+          docker buildx imagetools create \
+            --tag rsubr/php-apache-ubuntu:24.04 \
+            rsubr/php-apache-ubuntu:24.04-amd64 \
+            rsubr/php-apache-ubuntu:24.04-arm64
 
