@@ -2,12 +2,12 @@ name: multi-arch docker build using qemu
 
 on:
   push:
-    branches: noble
+    branches: resolute
   workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     
     steps:
       - name: checkout code
@@ -28,6 +28,6 @@ jobs:
       - name: build multi-arch image and push to docker hub
         run: |
           docker buildx build --push \
-            --tag rsubr/php-apache-ubuntu:noble  \
-            --tag rsubr/php-apache-ubuntu:24.04  \
+            --tag rsubr/php-apache-ubuntu:resolute  \
+            --tag rsubr/php-apache-ubuntu:26.04  \
             --platform linux/amd64,linux/arm64 .

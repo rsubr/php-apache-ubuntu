@@ -1,11 +1,11 @@
-FROM ubuntu:noble
-LABEL Author="Raja Subramanian" Description="A comprehensive docker image to run Apache-2.4 PHP-8.3 applications like Wordpress, Laravel, etc"
+FROM ubuntu:resolute
+LABEL Author="Raja Subramanian" Description="A comprehensive docker image to run Apache PHP applications like Wordpress, Laravel, etc"
 
 
 # Stop dpkg-reconfigure tzdata from prompting for input
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install apache and php7
+# Install apache and php
 RUN apt-get update && \
     apt-get -y install \
         apache2 \
